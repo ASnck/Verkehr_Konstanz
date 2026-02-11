@@ -76,16 +76,13 @@ def erstelle_tabelle(title_data, title_meta):
 
 def speichere_in_postgres(title_data, data, title_meta, meta):
     """Speichert DataFrame in PostgreSQL Datenbank."""
-    
-    table_1 = None
-    table_2 = None
-    
+
     conn = psycopg2.connect(os.environ["DATABASE_URL"])
     cur = conn.cursor()
 
     for _, row in data.iterrows():
         cur.execute(f"""
-            INSERT INTO {table_1} (datum, richtung, anzahL_messungen, anzahl_fahrzeuge, durchschnittsgeschwindigkeit, hoechstgeschwindigkeit, info, strasse, hausnummer)
+            INSERT INTO {title_data} (datum, richtung, anzahL_messungen, anzahl_fahrzeuge, durchschnittsgeschwindigkeit, hoechstgeschwindigkeit, info, strasse, hausnummer)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             row.get["datum"],
@@ -101,7 +98,7 @@ def speichere_in_postgres(title_data, data, title_meta, meta):
         
     for _, row in meta.iterrows():
         cur.execute(f"""
-            INSERT INTO {table_2} (strasse, size, start, ende, strasse_geodaten, lat, lon)
+            INSERT INTO {title_meta} (strasse, size, start, ende, strasse_geodaten, lat, lon)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, (
             row.get["strasse"],
